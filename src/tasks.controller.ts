@@ -12,6 +12,7 @@ import { TasksService } from './tasks.service';
 import { Task } from './task.entity';
 import { CreateTaskDto } from './create-task.dto';
 import { TaskStatus } from './task-status.enum';
+import { v4 as uuidv4 } from 'uuid';
 
 @Controller('tasks')
 export class TasksController {
@@ -40,13 +41,14 @@ export class TasksController {
       );
     }
     const newTask: Task = {
-      id: '',
+      id: uuidv4(),
       title: createTaskDto.title,
       description: createTaskDto.description,
       status: TaskStatus.OPEN,
       categoryId: createTaskDto.categoryId,
     };
 
+    console.log(uuidv4());
     return this.tasksService.createTask(newTask);
   }
 
