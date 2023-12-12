@@ -1,16 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import { Category } from './category.entity';
-import { CategoriesRepository } from './categories.repository';
+import * as JsonDB from 'node-json-db';
+import * as Config from 'node-json-db/dist/lib/JsonDBConfig';
 
 @Injectable()
 export class CategoriesService {
-  constructor(private readonly categoriesRepository: CategoriesRepository) {}
+  private db: JsonDB.JsonDB;
 
-  getAllCategories(): Category[] {
-    return this.categoriesRepository.getAllCategories();
+  constructor() {
+    this.db = new JsonDB.JsonDB(
+      new Config.Config('myCategoriesDB', true, false, '/'),
+    );
   }
 
-  createCategory(category: Category): Category {
-    return this.categoriesRepository.createCategory(category);
+  getAllCategories() {
+    return this.db.getData('/categories');
+  }
+
+  getCategoryById(id: string) {
+    return this.db.getData(`/categories/${id}`);
+  }
+
+  createCategory(category: any) {
+    const categoryId = `/${category.id}`;
+    this.db.push(`/categories${categoryId}`, category, true);
+    return category;
+  }
+
+  deleteCategory(id: string) {
+    this.db.delete(`/categories/${id}`);
   }
 }

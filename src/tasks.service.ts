@@ -1,24 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import { Task } from './task.entity';
-import { TasksRepository } from './tasks.repository';
+import * as JsonDB from 'node-json-db';
+import * as Config from 'node-json-db/dist/lib/JsonDBConfig';
 
 @Injectable()
 export class TasksService {
-  constructor(private readonly tasksRepository: TasksRepository) {}
+  private db: JsonDB.JsonDB;
 
-  getAllTasks(): Task[] {
-    return this.tasksRepository.getAllTasks();
+  constructor() {
+    this.db = new JsonDB.JsonDB(
+      new Config.Config('myTasksDB', true, false, '/'),
+    );
   }
 
-  getTaskById(id: string): Task {
-    return this.tasksRepository.getTaskById(id);
+  getAllTasks() {
+    return this.db.getData('/tasks');
   }
 
-  createTask(task: Task): Task {
-    return this.tasksRepository.createTask(task);
+  getTaskById(id: string) {
+    return this.db.getData(`/tasks/${id}`);
   }
 
-  deleteTask(id: string): void {
-    this.tasksRepository.deleteTask(id);
+  createTask(task: any) {
+    const taskId = `/${task.id}`;
+    this.db.push(`/tasks${taskId}`, task, true);
+    return task;
+  }
+
+  deleteTask(id: string) {
+    this.db.delete(`/tasks/${id}`);
   }
 }

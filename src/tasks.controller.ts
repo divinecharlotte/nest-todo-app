@@ -5,13 +5,10 @@ import {
   Delete,
   Param,
   Body,
-  HttpException,
   HttpStatus,
+  HttpException,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-import { Task } from './task.entity';
-import { CreateTaskDto } from './create-task.dto';
-import { TaskStatus } from './task-status.enum';
 import { v4 as uuidv4 } from 'uuid';
 
 @Controller('tasks')
@@ -19,17 +16,17 @@ export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Get()
-  getAllTasks(): Task[] {
+  getAllTasks() {
     return this.tasksService.getAllTasks();
   }
 
   @Get(':id')
-  getTaskById(@Param('id') id: string): Task {
+  getTaskById(@Param('id') id: string) {
     return this.tasksService.getTaskById(id);
   }
 
   @Post()
-  createTask(@Body() createTaskDto: CreateTaskDto): Task {
+  createTask(@Body() createTaskDto: any) {
     if (
       !createTaskDto.title ||
       !createTaskDto.description ||
@@ -40,20 +37,20 @@ export class TasksController {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const newTask: Task = {
+
+    const newTask = {
       id: uuidv4(),
       title: createTaskDto.title,
       description: createTaskDto.description,
-      status: TaskStatus.OPEN,
+      status: createTaskDto.status,
       categoryId: createTaskDto.categoryId,
     };
 
-    console.log(uuidv4());
     return this.tasksService.createTask(newTask);
   }
 
   @Delete(':id')
-  deleteTask(@Param('id') id: string): void {
+  deleteTask(@Param('id') id: string) {
     this.tasksService.deleteTask(id);
   }
 }
