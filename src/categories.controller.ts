@@ -10,21 +10,41 @@ import {
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { v4 as uuidv4 } from 'uuid';
+import { Category } from './category.entity';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+@ApiTags('categories')
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
+  @ApiResponse({
+    status: 201,
+    description: 'all categories retrived succeefully.',
+  })
   getAllCategories() {
     return this.categoriesService.getAllCategories();
   }
 
   @Get(':id')
+  @ApiResponse({
+    status: 201,
+    description: 'category retrived by id.',
+  })
   getCategoryById(@Param('id') id: string) {
     return this.categoriesService.getCategoryById(id);
   }
 
   @Post()
+  @ApiResponse({
+    status: 201,
+    description: 'The category has been successfully created.',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiBody({
+    type: Category,
+    description: 'Json structure for category object',
+  })
   createCategory(@Body() createCategoryDto: any) {
     if (!createCategoryDto.name) {
       throw new HttpException(
