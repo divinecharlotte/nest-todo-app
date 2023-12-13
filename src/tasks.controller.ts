@@ -1,3 +1,4 @@
+import { TaskStatus } from './task-status.enum';
 import {
   Controller,
   Get,
@@ -64,11 +65,9 @@ export class TasksController {
       id: uuidv4(),
       title: createTaskDto.title,
       description: createTaskDto.description,
-      status: createTaskDto.status,
+      status: TaskStatus.OPEN,
       categoryId: createTaskDto.categoryId,
     };
-
-    console.log(newTask);
     return this.tasksService.createTask(newTask);
   }
 

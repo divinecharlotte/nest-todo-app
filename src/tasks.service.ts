@@ -25,7 +25,6 @@ export class TasksService {
   }
 
   async createTask(task: any) {
-    // const taskId = `/${task.id}`;
     const taskIndex = await this.c_db.getIndex(
       '/categories',
       task.categoryId,
