@@ -8,6 +8,7 @@ import {
   Body,
   HttpStatus,
   HttpException,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { v4 as uuidv4 } from 'uuid';
@@ -32,11 +33,8 @@ export class TasksController {
     status: 200,
     description: 'task retrived succeefully.',
   })
-  getTaskById(@Param('id') id: string) {
-    if (!id) {
-      return this.tasksService.getTaskById(id);
-    }
-    return 'ID does not exist';
+  async getTaskById(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.tasksService.getTaskById(id);
   }
 
   @Post()

@@ -24,8 +24,13 @@ export class CategoriesService {
     return this.db.getData('/categories');
   }
 
-  getCategoryById(id: string) {
-    return this.db.getData(`/categories/${id}`);
+  async getCategoryById(id: string) {
+    const matchedCategory = (await this.getAllCategories()).filter(
+      (category) => category.id === id,
+    );
+    if (matchedCategory.length === 0)
+      throw new NotFoundException('category not found');
+    return matchedCategory[0];
   }
 
   createCategory(category: any) {
@@ -47,6 +52,6 @@ export class CategoriesService {
       throw new NotFoundException('categoryId does not exist');
     this.db.delete(`/categories[${categoryIndex}]`);
 
-    return 'categoru is successfully deleted';
+    return 'category is successfully deleted';
   }
 }

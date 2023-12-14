@@ -20,8 +20,12 @@ export class TasksService {
     return this.db.getData('/tasks');
   }
 
-  getTaskById(id: string) {
-    return this.db.getData(`/tasks/${id}`);
+  async getTaskById(id: string) {
+    const matchedItem = (await this.getAllTasks()).filter(
+      (task) => task.id === id,
+    );
+    if (matchedItem.length === 0) throw new NotFoundException('Task not found');
+    return matchedItem[0];
   }
 
   async createTask(task: any) {

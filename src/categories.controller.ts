@@ -7,6 +7,7 @@ import {
   Body,
   HttpStatus,
   HttpException,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { v4 as uuidv4 } from 'uuid';
@@ -31,7 +32,7 @@ export class CategoriesController {
     status: 201,
     description: 'category retrived by id.',
   })
-  getCategoryById(@Param('id') id: string) {
+  getCategoryById(@Param('id', ParseUUIDPipe) id: string) {
     return this.categoriesService.getCategoryById(id);
   }
 
@@ -62,6 +63,7 @@ export class CategoriesController {
   }
 
   @Delete(':id')
+  @ApiResponse({ status: 200, description: 'category deleted susscessfully' })
   async deleteCategory(@Param('id') id: string) {
     await this.categoriesService.deleteCategory(id);
   }
